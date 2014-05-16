@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".RestaurantActivity" >
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	    <ImageView
+	        android:id="@+id/restLogo"
+		    android:layout_width="50dip"
+	        android:layout_height="50dip"
+	        android:layout_margin="5dip"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:contentDescription="@string/rest_logo"
+	       	android:src="@android:drawable/ic_input_add" />
+	    <ImageButton
+	        android:layout_height="wrap_content"
+		    android:layout_width="wrap_content"
+	        android:layout_below="@id/restLogo" 
+		    android:layout_alignLeft="@id/restLogo"
+		    android:layout_alignRight="@id/restLogo"
+		    android:id="@+id/navigateToRestaurantBtn"
+		    android:contentDescription="@string/navigateTo"
+		    android:src="@android:drawable/ic_menu_compass"/>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="25sp"
+	        android:layout_marginLeft="10dp"
+	        android:id="@+id/restaurantName"
+	        android:layout_toRightOf="@id/restLogo"
+	        android:layout_alignTop="@id/restLogo"/>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:id="@+id/restaurantDistanceTo" 
+	        android:layout_below="@id/restaurantName"
+	        android:layout_toRightOf="@id/restLogo"/>
+	    <RatingBar
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/ratingOfRestaurant"
+	        android:layout_toRightOf="@id/navigateToRestaurantBtn"
+	        android:layout_below="@id/restaurantDistanceTo"
+	        android:layout_alignBaseline="@id/navigateToRestaurantBtn"
+	        style="?android:attr/ratingBarStyle"
+	        android:max="5"
+	        android:numStars="5"
+	        android:rating="0.0"
+	        android:stepSize="0.0" />
+	</RelativeLayout>
+	
+	
+    <ListView
+        android:id="@+id/listOfRestaurants"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    
+
+</LinearLayout>

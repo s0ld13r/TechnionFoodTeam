@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    <ImageView
+        android:id="@+id/image_restaurant_list__item"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_margin="5dip"
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/rest_logo"
+        android:src="@android:drawable/ic_input_add"/>
+    <LinearLayout
+        android:layout_toRightOf="@id/image_restaurant_list__item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/dish_name_restaurant_list__item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp" />
+        <TextView
+            android:id="@+id/distance_dish_list__item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" 
+            android:text="@string/distance"/>
+        <RatingBar
+            android:id="@+id/rating_dish_list__item"
+    		style="?android:attr/ratingBarStyleSmall"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content"
+    		android:max="5"
+    		android:numStars="5"
+    		android:rating="0.0"
+    		android:stepSize="0.0" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" 
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/image_dish_list_item"
+        android:layout_width="50dip"
+        android:layout_height="50dip"
+        android:layout_margin="5dip"
+        android:contentDescription="@string/rest_logo"
+        android:src="@android:drawable/ic_input_add"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+	    <LinearLayout
+	        android:layout_height="match_parent"
+	        android:layout_width="0px"
+	        android:orientation="vertical"
+	        android:layout_weight="5">
+	        <TextView
+	            android:id="@+id/dish_name_dish_list_item"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="25sp" />
+	
+	        <RatingBar
+	            android:id="@+id/rating_dish_list_item"
+	    		style="?android:attr/ratingBarStyleSmall"
+	    		android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:max="5"
+	    		android:numStars="5"
+	    		android:rating="0.0"
+	    		android:stepSize="0.0" />
+	    </LinearLayout>
+	    <LinearLayout
+	        android:layout_height="match_parent"
+	        android:orientation="vertical"
+	        android:layout_width="0px"
+	        android:layout_weight="1">
+	        <TextView
+	            android:id="@+id/price_dish_list_item"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="25sp" 
+	            android:textAlignment="center"
+	            android:maxLines="1"/>
+	
+	        <TextView
+	            android:id="@+id/price_units_dish_list_item"
+	    		android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:text="@string/shekels"
+	    		android:textAlignment="center" />
+	    </LinearLayout>
+    </LinearLayout>
+	
+</LinearLayout>

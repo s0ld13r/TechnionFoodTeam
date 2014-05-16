@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".DishActivity" >
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	    <ImageView
+	        android:id="@+id/ad_dishLogo"
+		    android:layout_width="50dip"
+	        android:layout_height="50dip"
+	        android:layout_margin="5dip"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:contentDescription="@string/rest_logo"
+	       	android:src="@android:drawable/ic_input_add" />
+	   
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="25sp"
+	        android:layout_marginLeft="10dp"
+	        android:id="@+id/ad_dishName"
+	        android:layout_toRightOf="@id/ad_dishLogo"
+	        android:layout_alignTop="@id/ad_dishLogo"/>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:id="@+id/ad_restaurantName" 
+	        android:layout_below="@id/ad_dishName"
+	        android:layout_toRightOf="@id/ad_dishLogo"/>
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/ad_price"
+	        android:layout_alignTop="@id/ad_dishLogo"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:textSize="18sp" />
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/ad_priceUnits"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@id/ad_price" 
+	        android:text="@string/shekels"/>
+	    <RatingBar
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/ad_ratingOfRestaurant"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@id/ad_dishLogo"
+	        style="?android:attr/ratingBarStyle"
+	        android:max="5"
+	        android:numStars="5"
+	        android:rating="0.0"
+	        android:stepSize="0.0" />
+	</RelativeLayout>
+	<TextView
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:background="@android:color/white"
+	    android:id="@+id/ad_dishDescription" />
+	<TextView
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:layout_marginBottom="5dp"
+	    android:background="@android:color/darker_gray"
+	    android:text="@string/reviews" />
+	    
+	
+    <ListView
+        android:id="@+id/ad_listOfReviews"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    
+
+</LinearLayout>
