@@ -8,10 +8,13 @@ import java.net.URL;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.gmail.technionfoodteam.model.Restaurant;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -62,16 +65,25 @@ public class RestaurantsActivity extends Activity {
 				connection = (HttpURLConnection)url.openConnection();
 				connection.setRequestMethod("GET");
 				connection.setRequestProperty("Accept", "text/plain");
-				connection.setReadTimeout(3000);
-				connection.setConnectTimeout(3000);
+				connection.setReadTimeout(TechnionFoodApp.READ_TIMEOUT);
+				connection.setConnectTimeout(TechnionFoodApp.CONNECTION_TIMEOUT);
 				connection.connect();
 				int statusCode = connection.getResponseCode();
 				if(statusCode != HttpURLConnection.HTTP_OK){
-					return "Error: Failed get data from " + path + " Status is :" + statusCode;
+					JSONObject err = new JSONObject();
+					err.put(TechnionFoodApp.JSON_ERROR, "Server error. Can not get information from server.");
+					return err.toString();
 				}
 				return readTextFromServer();
 			}catch(Exception ex){
-				return "Error: "+ ex.getMessage();
+				JSONObject err = new JSONObject();
+				try {
+					err.put(TechnionFoodApp.JSON_ERROR, "Connection error: "+ ex.getMessage());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return err.toString();
 			}finally{
 				if(connection!=null){
 					connection.disconnect();
@@ -82,10 +94,29 @@ public class RestaurantsActivity extends Activity {
 		protected void onPostExecute(String result) {
 			JSONArray arr = new JSONArray();
 			try {
+				TechnionFoodApp.isJSONError(result);
 				arr = new JSONArray(result);
 				adapter = new RestaurantsAdapter(arr,RestaurantsActivity.this);
 				list.setAdapter(adapter);
-			} catch (JSONException e) {
+			} catch (Exception e) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						RestaurantsActivity.this);
+				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
+				alertDialogBuilder.setCancelable(false)
+				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						RestaurantsActivity.this.finish();
+						startActivity(new Intent(getApplicationContext(), RestaurantsActivity.class));
+					}
+				  })
+				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						RestaurantsActivity.this.finish();
+					}
+				});
+				alertDialogBuilder.create().show();
 				e.printStackTrace();
 			}
 			super.onPostExecute(result);
@@ -103,3 +134,4 @@ public class RestaurantsActivity extends Activity {
 		}
 	}
 }
+

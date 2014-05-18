@@ -11,17 +11,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.gmail.technionfoodteam.model.Dish;
 import com.gmail.technionfoodteam.model.Restaurant;
@@ -74,16 +76,25 @@ public class RestaurantActivity extends Activity {
 				connection = (HttpURLConnection)url.openConnection();
 				connection.setRequestMethod("GET");
 				connection.setRequestProperty("Accept", "text/plain");
-				connection.setReadTimeout(3000);
-				connection.setConnectTimeout(3000);
+				connection.setReadTimeout(TechnionFoodApp.READ_TIMEOUT);
+				connection.setConnectTimeout(TechnionFoodApp.CONNECTION_TIMEOUT);
 				connection.connect();
 				int statusCode = connection.getResponseCode();
 				if(statusCode != HttpURLConnection.HTTP_OK){
-					return "Error: Failed get data from " + path + " Status is :" + statusCode;
+					JSONObject err = new JSONObject();
+					err.put(TechnionFoodApp.JSON_ERROR, "Server error. Can not get information from server.");
+					return err.toString();
 				}
 				return readTextFromServer();
 			}catch(Exception ex){
-				return "Error: "+ ex.getMessage();
+				JSONObject err = new JSONObject();
+				try {
+					err.put(TechnionFoodApp.JSON_ERROR, "Connection error: "+ ex.getMessage());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return err.toString();
 			}finally{
 				if(connection!=null){
 					connection.disconnect();
@@ -94,6 +105,7 @@ public class RestaurantActivity extends Activity {
 		protected void onPostExecute(String result) {
 			JSONArray dishesArr = new JSONArray();
 			try {
+				TechnionFoodApp.isJSONError(result);
 				JSONObject obj = new JSONObject(result);
 				JSONObject restObj = obj.getJSONObject(Restaurant.JSON_OBJECT_NAME);
 				currentRestaurant = Restaurant.fromJSON(restObj);
@@ -106,7 +118,25 @@ public class RestaurantActivity extends Activity {
 				
 				adapter = new DishesAdapter(dishesArr,RestaurantActivity.this);
 				list.setAdapter(adapter);
-			} catch (JSONException e) {
+			} catch (Exception e) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						RestaurantActivity.this);
+				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
+				alertDialogBuilder.setCancelable(false)
+				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						RestaurantActivity.this.finish();
+						startActivity(new Intent(getApplicationContext(), RestaurantActivity.class));
+					}
+				  })
+				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						RestaurantActivity.this.finish();
+					}
+				});
+				alertDialogBuilder.create().show();
 				e.printStackTrace();
 			}
 			super.onPostExecute(result);
