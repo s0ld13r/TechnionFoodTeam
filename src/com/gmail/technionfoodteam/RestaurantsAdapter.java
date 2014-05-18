@@ -67,7 +67,7 @@ public class RestaurantsAdapter extends BaseAdapter {
 	    }
 		Restaurant restaurant = (Restaurant)getItem(position);
 	    holder.nameTv.setText(restaurant.getName());
-	    holder.distanceTv.setText(parent.getContext().getString(R.string.distance) +" not available");
+	    holder.distanceTv.setText(restaurant.getAddress());
 	    holder.ratingRb.setRating((float)restaurant.getRanking());
 	    String path = restaurant.getPathToLogo();
 	    imageLoader.displayImage(path, holder.logoIv);

@@ -98,7 +98,7 @@ public class DishActivity extends Activity {
 				JSONObject restObj = obj.getJSONObject(Dish.JSON_OBJECT_NAME);
 				currentDish = Dish.fromJSON(restObj);
 				dishNameTv.setText(currentDish.getName());
-				restaurantName.setText("Restaurant id: " +currentDish.getRestaurantId());
+				restaurantName.setText(currentDish.getRestaurantName());
 				priceTv.setText(""+currentDish.getPrice());
 				descriptionTv.setText(currentDish.getDescription());
 				rating.setRating((float)currentDish.getRanking());

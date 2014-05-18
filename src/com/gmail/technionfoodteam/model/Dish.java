@@ -13,6 +13,7 @@ public class Dish {
 	public static String JSON_DISH_TYPE = "dishType";
 	public static String JSON_RANKING = "ranking";
 	public static String JSON_PICTURE = "picture";
+	public static String JSON_REST_NAME = "restName";
 	private int id;
 	private String name;
 	private double price;
@@ -21,6 +22,7 @@ public class Dish {
 	private int dishType;
 	private double ranking;
 	private String photo;
+	private String restaurantName;
 	public Dish(String name, double price, String description, int restId, int dishType, double ranking, String photo){
 		this.name = name;
 		this.price = price;
@@ -30,9 +32,10 @@ public class Dish {
 		this.ranking = ranking;
 		this.photo = photo;
 	}
-	public Dish(int id, String name, double price, String description, int restId, int dishType, double ranking,  String photo){
+	public Dish(int id, String name, double price, String description, int restId, int dishType, double ranking,  String photo, String restName){
 		this(name, price, description, restId, dishType, ranking, photo);
 		this.id = id;
+		this.restaurantName = restName;
 	}
 	public int getId() {
 		return id;
@@ -59,6 +62,9 @@ public class Dish {
 	public String getPhoto() {
 		return photo;
 	}
+	public String getRestaurantName(){
+		return restaurantName;
+	}
 	public JSONObject toJSON() throws JSONException{
 		JSONObject obj = new JSONObject();
 		obj.put(JSON_ID, getId());
@@ -69,13 +75,14 @@ public class Dish {
 		obj.put(JSON_DISH_TYPE, getDishType());
 		obj.put(JSON_RANKING, getRanking());
 		obj.put(JSON_PICTURE, getPhoto());
+		obj.put(JSON_REST_NAME, getRestaurantName());
 		return obj;
 	}
 	public static Dish fromJSON(JSONObject obj) throws JSONException{
 		Dish dish = new Dish(obj.getInt(JSON_ID), obj.getString(JSON_NAME), 
 				obj.getDouble(JSON_PRICE), obj.getString(JSON_DESCRIPTION),
 				obj.getInt(JSON_REST_ID), obj.getInt(JSON_DISH_TYPE), obj.getDouble(JSON_RANKING),
-				obj.getString(JSON_PICTURE));
+				obj.getString(JSON_PICTURE), obj.getString(JSON_REST_NAME));
 		return dish;
 	}
 }

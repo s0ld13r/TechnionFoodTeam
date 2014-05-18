@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -111,7 +112,7 @@ public class RestaurantActivity extends Activity {
 				currentRestaurant = Restaurant.fromJSON(restObj);
 				//navigateBtn;
 				restaurantNameTv.setText(currentRestaurant.getName());
-				distanceTv.setText(getString(R.string.distance) + ": unknown");
+				distanceTv.setText(currentRestaurant.getAddress());
 				rating.setRating((float)currentRestaurant.getRanking());
 				ImageLoader.getInstance().displayImage(currentRestaurant.getPathToLogo(), logoIv);
 				dishesArr = obj.getJSONArray("dishes");
@@ -152,5 +153,11 @@ public class RestaurantActivity extends Activity {
 			}
 			return sb.toString();
 		}
+		
+	}
+	public void navigateFunc(View view){
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" +currentRestaurant.getLat()+","+currentRestaurant.getLng()));
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
 	}
 }
