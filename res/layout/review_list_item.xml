@@ -14,7 +14,7 @@
             android:id="@+id/rli_rating"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-    		style="?android:attr/ratingBarStyleIndicator"
+    		style="?android:attr/ratingBarStyleSmall"
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:max="5"
@@ -23,7 +23,7 @@
     		android:stepSize="0.0" />
         <TextView
             android:id="@+id/rli_description"
-            android:layout_below="@id/rli_rating"
+            android:layout_below="@id/rli_username"
             android:layout_alignParentLeft="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -4,8 +4,8 @@
     android:layout_height="wrap_content" >
     <ImageView
         android:id="@+id/image_restaurant_list__item"
-        android:layout_width="200dip"
-        android:layout_height="200dip"
+        android:layout_width="100dip"
+        android:layout_height="100dip"
         android:layout_margin="5dip"
         android:layout_alignParentLeft="true"
         android:contentDescription="@string/rest_logo"
@@ -19,7 +19,7 @@
             android:id="@+id/dish_name_restaurant_list__item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40sp" />
+            android:textSize="35sp" />
         <TextView
             android:id="@+id/distance_dish_list__item"
             android:layout_width="wrap_content"

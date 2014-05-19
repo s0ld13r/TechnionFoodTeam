@@ -10,4 +10,8 @@
 	<string name="shekels">NIS</string>
 	<string name="navigateTo">Navigate to restaurant</string>
 	<string name="reviews">Reviews</string>
+	<string name="menu">Menu</string>
+	<string name="info">Info</string>
+	<string name="rate">Rate</string>
+	<string name="call">Call</string>
 </resources>
