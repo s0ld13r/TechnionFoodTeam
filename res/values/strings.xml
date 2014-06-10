@@ -14,4 +14,22 @@
 	<string name="info">Info</string>
 	<string name="rate">Rate</string>
 	<string name="call">Call</string>
+	
+	<string-array name="nav_drawer_items">
+        <item >Home</item>
+        <item >Search</item>
+        <item >Deals</item>
+        <item >Settings</item>
+        <item >About us</item>
+    </string-array>
+     
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/home</item>
+        <item>@drawable/find</item>
+        <item>@drawable/promotion</item>
+        <item>@drawable/process</item>
+        <item>@drawable/info</item>
+    </array>
 </resources>

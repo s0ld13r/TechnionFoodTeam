@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:background="#FFFFFF"
-    tools:context=".DishActivity" >
+    tools:context=".DishFragment" >
 	<RelativeLayout
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content">

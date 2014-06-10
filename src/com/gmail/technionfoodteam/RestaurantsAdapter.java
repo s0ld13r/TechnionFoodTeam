@@ -1,11 +1,14 @@
 package com.gmail.technionfoodteam;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +21,26 @@ import com.gmail.technionfoodteam.model.Restaurant;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RestaurantsAdapter extends BaseAdapter {
+	public static final int BY_RANKING = 0;
+	public static final int BY_DISTANCE = 1;
+	private int orderBy;
 	private LinkedList<Restaurant> restaurants;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
-    private Context context;
-	public RestaurantsAdapter(JSONArray arr, Context context) {
+    private TechnionFoodApp app;
+    
+    public RestaurantsAdapter(TechnionFoodApp myApp) {
+		orderBy = BY_RANKING;
 		restaurants = new LinkedList<Restaurant>();
+		this.app = myApp;
+	}
+    public RestaurantsAdapter(JSONArray arr,TechnionFoodApp myApp) {
+		orderBy = BY_RANKING;
+		setRestaurantsListBy(arr, BY_RANKING);
+		this.app = myApp;
+	}
+	private void setRestaurantsListBy(JSONArray arr, int order){
+		restaurants = new LinkedList<Restaurant>();
+		
 		for(int i=0; i<arr.length();i++){
 			try {
 				restaurants.add(Restaurant.fromJSON(arr.getJSONObject(i)));
@@ -30,8 +48,42 @@ public class RestaurantsAdapter extends BaseAdapter {
 				e.printStackTrace();
 			}
 		}
-		this.context = context;
-		//imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+		setOrderTo(order);
+	}
+	public void setOrderTo(int newOrder){
+		if(newOrder != orderBy){
+			if(newOrder == BY_RANKING){
+				Comparator<Restaurant> rankingComperator = new Comparator<Restaurant>() {					
+					@Override
+					public int compare(Restaurant lhs, Restaurant rhs) {
+						return (Double.valueOf(lhs.getRanking())).compareTo(Double.valueOf(rhs.getRanking()));
+					}
+				};
+				
+				Collections.sort(restaurants, Collections.reverseOrder(rankingComperator));
+			}else if(newOrder == BY_DISTANCE){
+				Comparator<Restaurant> distanceComperator = new Comparator<Restaurant>() {					
+					@Override
+					public int compare(Restaurant lhs, Restaurant rhs) {
+						Location lhsLocation = new Location("Left POint");
+						lhsLocation.setLatitude(lhs.getLat());
+						lhsLocation.setLongitude(lhs.getLng());
+						Location rhsLocation = new Location("Right POint");
+						rhsLocation.setLatitude(rhs.getLat());
+						rhsLocation.setLongitude(rhs.getLng());
+						Location current = app.getCurrentLocation();
+						return Float.valueOf(current.distanceTo(lhsLocation)).compareTo(Float.valueOf(current.distanceTo(rhsLocation)));
+					}
+				};
+				Collections.sort(restaurants, distanceComperator);
+			}
+			orderBy = newOrder;
+			notifyDataSetChanged();
+		}
+	}
+	public void setRestaurants(JSONArray arr, int order){
+		setRestaurantsListBy(arr,order);
+		notifyDataSetChanged();
 	}
 	@Override
 	public int getCount() {
@@ -53,7 +105,7 @@ public class RestaurantsAdapter extends BaseAdapter {
 		View view = convertView;
 		final ViewHolder holder;
 		if(convertView == null){
-			LayoutInflater inflater = (LayoutInflater) context
+			LayoutInflater inflater = (LayoutInflater) app
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.restaurant_list_item, parent, false);
 			holder = new ViewHolder();
@@ -79,4 +131,5 @@ public class RestaurantsAdapter extends BaseAdapter {
 		public TextView distanceTv;
 		public RatingBar ratingRb;
 	}
+
 }

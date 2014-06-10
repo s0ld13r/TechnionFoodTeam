@@ -3,7 +3,7 @@ package com.gmail.technionfoodteam.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant>{
 	public static String JSON_OBJECT_NAME = "restaurant";
 	public static String JSON_ID = "id";
 	public static String JSON_NAME = "name";
@@ -71,4 +71,13 @@ public class Restaurant {
 				obj.getDouble(JSON_LAT),obj.getDouble(JSON_LNG), obj.getDouble(JSON_RANKING), obj.getString(JSON_PICTURE));
 		return restaurant;
 	}
+	@Override
+	public int compareTo(Restaurant another) {
+		if(this.ranking > another.ranking)
+			return 1;
+		if(this.ranking < another.ranking)
+			return -1;
+		return 0;
+	}
+	
 }

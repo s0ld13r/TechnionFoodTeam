@@ -10,12 +10,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -24,7 +27,7 @@ import android.widget.TextView;
 import com.gmail.technionfoodteam.model.Dish;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DishActivity extends Activity {
+public class DishFragment extends Fragment {
 	private ListView list;
 	private ReviewsAdapter adapter;
 	public static String DISH_ID="dish_id";
@@ -36,23 +39,30 @@ public class DishActivity extends Activity {
 	private TextView priceTv;
 	private TextView descriptionTv;
 	private RatingBar rating;
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+		      Bundle savedInstanceState){
+		View view = inflater.inflate(R.layout.activity_dish,
+		        container, false);
+		
+		list = (ListView)view.findViewById(R.id.ad_listOfReviews);
+		logoIv = (ImageView)view.findViewById(R.id.ad_dishLogo);
+		dishNameTv = (TextView)view.findViewById(R.id.ad_dishName);
+		priceTv = (TextView)view.findViewById(R.id.ad_price);
+		restaurantName = (TextView)view.findViewById(R.id.ad_restaurantName);
+		descriptionTv = (TextView)view.findViewById(R.id.ad_dishDescription);
+		rating = (RatingBar)view.findViewById(R.id.ad_ratingOfRestaurant);
+		
+		return view;
+	}
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_dish);
-		dishId = getIntent().getIntExtra(DISH_ID, 1);
-		list = (ListView)findViewById(R.id.ad_listOfReviews);
-		logoIv = (ImageView)findViewById(R.id.ad_dishLogo);
-		dishNameTv = (TextView)findViewById(R.id.ad_dishName);
-		priceTv = (TextView)findViewById(R.id.ad_price);
-		restaurantName = (TextView)findViewById(R.id.ad_restaurantName);
-		descriptionTv = (TextView)findViewById(R.id.ad_dishDescription);
-		rating = (RatingBar)findViewById(R.id.ad_ratingOfRestaurant);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		dishId = getArguments().getInt(DISH_ID, 1);
 		GetDishReviewsFromServer thread = new GetDishReviewsFromServer();
-
 		thread.execute();
 		
 	}
+
 	private class GetDishReviewsFromServer extends AsyncTask<Void, Void, String>{
 		private HttpURLConnection connection;
 		
@@ -105,24 +115,24 @@ public class DishActivity extends Activity {
 				ImageLoader.getInstance().displayImage(currentDish.getPhoto(), logoIv);
 				reviewsArr = obj.getJSONArray("reviews");
 				
-				adapter = new ReviewsAdapter(reviewsArr,DishActivity.this);
+				adapter = new ReviewsAdapter(reviewsArr,getActivity());
 				list.setAdapter(adapter);
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						DishActivity.this);
+						getActivity());
 				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
 				alertDialogBuilder.setCancelable(false)
 				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						DishActivity.this.finish();
-						startActivity(new Intent(getApplicationContext(), DishActivity.class));
+						getActivity().finish();
+						startActivity(new Intent(getActivity().getApplicationContext(), DishFragment.class));
 					}
 				  })
 				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						DishActivity.this.finish();
+						getActivity().finish();
 					}
 				});
 				alertDialogBuilder.create().show();

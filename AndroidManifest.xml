@@ -5,18 +5,20 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="17"
         android:targetSdkVersion="18" />
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/fork_medium"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         android:name="com.gmail.technionfoodteam.TechnionFoodApp" android:logo="@drawable/fork_high">
+        
         <activity
-            android:name="com.gmail.technionfoodteam.RestaurantsActivity"
+            android:name="com.gmail.technionfoodteam.MainActivity"
             android:label="@string/app_name" 
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
@@ -25,14 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.gmail.technionfoodteam.RestaurantActivity"
-            android:label="@string/app_name" 
-            android:configChanges="orientation|keyboardHidden|screenSize" />          
-         <activity
-            android:name="com.gmail.technionfoodteam.DishActivity"
-            android:label="@string/app_name" 
-            android:configChanges="orientation|keyboardHidden|screenSize" /> 
             
     </application>
 </manifest>

@@ -10,14 +10,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
@@ -30,7 +32,7 @@ import com.gmail.technionfoodteam.model.Dish;
 import com.gmail.technionfoodteam.model.Restaurant;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class RestaurantActivity extends Activity {
+public class RestaurantFragment extends Fragment {
 	private ListView list;
 	private DishesAdapter adapter;
 	public static String RESTAURANT_ID="restaurant_id";
@@ -42,30 +44,40 @@ public class RestaurantActivity extends Activity {
 	private TextView distanceTv;
 	private RatingBar rating;
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_restaurant);
-		restaurantId = getIntent().getIntExtra(RESTAURANT_ID, 1);
-		list = (ListView)findViewById(R.id.listOfRestaurants);
-		logoIv = (ImageView)findViewById(R.id.restLogo);
-		navigateBtn = (ImageButton)findViewById(R.id.navigateToRestaurantBtn);
-		restaurantNameTv = (TextView)findViewById(R.id.restaurantName);
-		distanceTv = (TextView)findViewById(R.id.restaurantDistanceTo);
-		rating = (RatingBar)findViewById(R.id.ratingOfRestaurant);
-		GetRestaurantFromServer thread = new GetRestaurantFromServer();
-		thread.execute();
+	 public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.activity_restaurant, container, false);
+		
+		list = (ListView)rootView.findViewById(R.id.listOfRestaurants);
+		logoIv = (ImageView)rootView.findViewById(R.id.restLogo);
+		navigateBtn = (ImageButton)rootView.findViewById(R.id.navigateToRestaurantBtn);
+		restaurantNameTv = (TextView)rootView.findViewById(R.id.restaurantName);
+		distanceTv = (TextView)rootView.findViewById(R.id.restaurantDistanceTo);
+		rating = (RatingBar)rootView.findViewById(R.id.ratingOfRestaurant);
+
 		list.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				Intent i = new Intent(getApplicationContext(), DishActivity.class);
+
+				Bundle bundle = new Bundle();
 				int id = ((Dish)((DishesAdapter)arg0.getAdapter()).getItem(arg2)).getId();
-				i.putExtra(DishActivity.DISH_ID, id);
-				startActivity(i);
+				bundle.putInt(DishFragment.DISH_ID, id);
+				
+				Fragment fragment = Fragment.instantiate(getActivity(), (new DishFragment()).getClass().getName());
+	   			fragment.setArguments(bundle);
+	    		((MainActivity)getActivity()).changeFragment(fragment);  	
 			}
 		});
+		return rootView;
 	}
-	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		restaurantId = getArguments().getInt(RESTAURANT_ID, 1);
+		GetRestaurantFromServer thread = new GetRestaurantFromServer();
+		thread.execute();
+		
+	}
 	private class GetRestaurantFromServer extends AsyncTask<Void, Void, String>{
 		private HttpURLConnection connection;
 		
@@ -117,24 +129,24 @@ public class RestaurantActivity extends Activity {
 				ImageLoader.getInstance().displayImage(currentRestaurant.getPathToLogo(), logoIv);
 				dishesArr = obj.getJSONArray("dishes");
 				
-				adapter = new DishesAdapter(dishesArr,RestaurantActivity.this);
+				adapter = new DishesAdapter(dishesArr,getActivity());
 				list.setAdapter(adapter);
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						RestaurantActivity.this);
+						getActivity());
 				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
 				alertDialogBuilder.setCancelable(false)
 				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						RestaurantActivity.this.finish();
-						startActivity(new Intent(getApplicationContext(), RestaurantActivity.class));
+						getActivity().finish();
+						startActivity(new Intent(getActivity().getApplicationContext(), RestaurantFragment.class));
 					}
 				  })
 				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						RestaurantActivity.this.finish();
+						getActivity().finish();
 					}
 				});
 				alertDialogBuilder.create().show();
