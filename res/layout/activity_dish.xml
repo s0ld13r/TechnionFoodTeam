@@ -61,7 +61,8 @@
 	        android:max="5"
 	        android:numStars="5"
 	        android:rating="0.0"
-	        android:stepSize="0.0" />
+	        android:stepSize="0.0" 
+	        android:clickable="true"/>
 	</RelativeLayout>
 	<TextView
 	    android:layout_width="match_parent"
@@ -79,7 +80,8 @@
 	    android:background="@android:color/black"
 	    android:textColor="@android:color/white"
 	    android:textSize="20sp"
-	    android:text="@string/reviews" />
+	    android:text="@string/reviews" 
+	    android:id="@+id/ad_review_title"/>
 	    
 	
     <ListView

@@ -12,7 +12,7 @@ public class Restaurant implements Comparable<Restaurant>{
 	public static String JSON_LNG = "lng";
 	public static String JSON_RANKING = "ranking";
 	public static String JSON_PICTURE = "picture";
-
+	public static String JSON_TELEPHONE = "telephone_number";
 	private int id;
 	private String name;
 	private String address;
@@ -20,18 +20,20 @@ public class Restaurant implements Comparable<Restaurant>{
 	private double lat;
 	private double ranking;
 	private String pathToLogo;
+	private String telephoneNumber;
 	public Restaurant(String name, String address, double lat, double lng, 
-			double ranking, String pathToLog){
+			double ranking, String pathToLog, String tel){
 		this.name = name;
 		this.address = address;
 		this.lat = lat;
 		this.lng = lng;
 		this.ranking = ranking;
 		this.pathToLogo = pathToLog;
+		this.telephoneNumber = tel;
 	}
 	public Restaurant(int id, String name, String address, double lat, double lng, 
-			double ranking, String pathToLog){
-		this(name,address,lat,lng,ranking,pathToLog);
+			double ranking, String pathToLog, String tel){
+		this(name,address,lat,lng,ranking,pathToLog, tel);
 		this.id = id;
 	}
 	public int getId() {
@@ -64,12 +66,16 @@ public class Restaurant implements Comparable<Restaurant>{
 		obj.put(JSON_LNG, getLng());
 		obj.put(JSON_RANKING, getRanking());
 		obj.put(JSON_PICTURE, getPathToLogo());
+		obj.put(JSON_TELEPHONE, getTelephoneNumber());
 		return obj;
 	}
 	public static Restaurant fromJSON(JSONObject obj) throws JSONException{
 		Restaurant restaurant = new Restaurant(obj.getInt(JSON_ID), obj.getString(JSON_NAME),obj.getString(JSON_ADDRESS),
-				obj.getDouble(JSON_LAT),obj.getDouble(JSON_LNG), obj.getDouble(JSON_RANKING), obj.getString(JSON_PICTURE));
+				obj.getDouble(JSON_LAT),obj.getDouble(JSON_LNG), obj.getDouble(JSON_RANKING), obj.getString(JSON_PICTURE), obj.getString(JSON_TELEPHONE));
 		return restaurant;
+	}
+	public String getTelephoneNumber(){
+		return telephoneNumber;
 	}
 	@Override
 	public int compareTo(Restaurant another) {

@@ -43,7 +43,10 @@ public class ReviewsAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return reviews.get(position).getId();
 	}
-
+	public void addReview(Review rev){
+		reviews.addFirst(rev);
+		notifyDataSetChanged();
+	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = convertView;

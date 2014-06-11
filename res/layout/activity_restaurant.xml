@@ -95,7 +95,8 @@
 		    android:id="@+id/callBtn"
 		    android:contentDescription="@string/call"
 		    android:background="@android:color/transparent"
-		    android:src="@android:drawable/ic_menu_call" />
+		    android:src="@android:drawable/ic_menu_call"
+		     android:onClick="callFunc" />
 		</RelativeLayout>
 		<View
 		    android:layout_width="fill_parent"

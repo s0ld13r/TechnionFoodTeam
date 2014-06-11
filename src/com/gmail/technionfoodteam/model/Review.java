@@ -12,6 +12,7 @@ public class Review {
 	private String username;
 	private double ranking;
 	private String description;
+	public Review(){}
 	public Review(String username, double ranking, String description){
 		this.username = username;
 		this.ranking = ranking;

@@ -6,12 +6,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,12 +28,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.gmail.technionfoodteam.model.Dish;
+import com.gmail.technionfoodteam.model.DishReview;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DishFragment extends Fragment {
@@ -39,6 +50,7 @@ public class DishFragment extends Fragment {
 	private TextView priceTv;
 	private TextView descriptionTv;
 	private RatingBar rating;
+	private DishReview review;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		      Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.activity_dish,
@@ -51,7 +63,13 @@ public class DishFragment extends Fragment {
 		restaurantName = (TextView)view.findViewById(R.id.ad_restaurantName);
 		descriptionTv = (TextView)view.findViewById(R.id.ad_dishDescription);
 		rating = (RatingBar)view.findViewById(R.id.ad_ratingOfRestaurant);
-		
+		TextView tv = (TextView)view.findViewById(R.id.ad_review_title);
+		tv.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showRatingDialog();
+			}
+		});
 		return view;
 	}
 	@Override
@@ -125,8 +143,8 @@ public class DishFragment extends Fragment {
 				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						getActivity().finish();
-						startActivity(new Intent(getActivity().getApplicationContext(), DishFragment.class));
+						GetDishReviewsFromServer thread = new GetDishReviewsFromServer();
+						thread.execute();
 					}
 				  })
 				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -151,4 +169,105 @@ public class DishFragment extends Fragment {
 			return sb.toString();
 		}
 	}
+	private void showRatingDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		LayoutInflater inflater = getActivity().getLayoutInflater();
+	    View dialoglayout = inflater.inflate(R.layout.dish_review_layout, null);
+	    final EditText nameEditText = (EditText)dialoglayout.findViewById(R.id.drlNameEditText);
+	    final EditText reviewEditText = (EditText)dialoglayout.findViewById(R.id.drlReviewEditText);
+	    final RatingBar reviewRatingBar = (RatingBar)dialoglayout.findViewById(R.id.drlRating);
+	    builder.setView(dialoglayout);
+		builder.setTitle(getString(R.string.drl_title))
+		    .setCancelable(false)
+		    .setNegativeButton(getString(R.string.drl_cancel), new OnClickListener() {			
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.cancel();					
+				}
+			})
+		    .setPositiveButton(getString(R.string.drl_ok), new DialogInterface.OnClickListener() {
+			    @Override
+			    public void onClick(DialogInterface dialog, int id) {
+			    	review  = new DishReview(currentDish.getId(),nameEditText.getText().toString().trim(),(double)reviewRatingBar.getRating() ,reviewEditText.getText().toString().trim());
+			    	adapter.addReview(review);
+			    	SendDishReviewToServer thread = new SendDishReviewToServer();
+			    	thread.execute();
+			    }
+		    
+		});
+		
+	    builder.show();
+	}
+	
+	
+	private class SendDishReviewToServer extends AsyncTask<Void, Void, String>{
+		
+		@Override
+		protected String doInBackground(Void... params) {
+			try{
+				String path = TechnionFoodApp.pathToServer + "service/addDishReview";
+				HttpClient client = new DefaultHttpClient();
+				URL url = new URL(path);
+				HttpPost post = new HttpPost(url.toString());
+				JSONObject obj = review.toJSON();
+				StringEntity se = new StringEntity(obj.toString());  
+				se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+				post.setHeader("Accept", "application/json");
+				post.setHeader("Content-type", "application/json");
+				post.setEntity(se);
+				HttpResponse response = client.execute(post);
+				int statusCode = response.getStatusLine().getStatusCode();
+				if((statusCode < HttpURLConnection.HTTP_OK) || (statusCode >= 300)){
+					JSONObject err = new JSONObject();
+					err.put(TechnionFoodApp.JSON_ERROR, "Server error. Can not get information from server.");
+					return err.toString();
+				}
+				String str = EntityUtils.toString(response.getEntity());
+				response.getEntity().consumeContent();
+				return str;
+			}catch(Exception ex){
+				JSONObject err = new JSONObject();
+				try {
+					err.put(TechnionFoodApp.JSON_ERROR, "Connection error: "+ ex.getMessage());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return err.toString();
+			}
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			JSONObject obj;
+			try {
+				TechnionFoodApp.isJSONError(result);
+				obj = new JSONObject(result);
+				double res = obj.getDouble(DishReview.JSON_RANKING);
+				rating.setRating((float)res);
+				
+			} catch (Exception e) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						getActivity());
+				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
+				alertDialogBuilder.setCancelable(false)
+				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						SendDishReviewToServer thread = new SendDishReviewToServer();
+				    	thread.execute();
+					}
+				  })
+				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						//getActivity().finish();
+					}
+				});
+				alertDialogBuilder.create().show();
+				e.printStackTrace();
+			}
+			super.onPostExecute(result);
+		}
+	}
+	
 }

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	<string name="drl_title">Dish review</string>
+    <string name="drl_ok">Add review</string>
+    <string name="drl_cancel">Cancel</string>
+    <string name="drl_name">Please enter a name</string>
+    <string name="drl_reviewe">Please enter a review</string>
+    
+    <string name="rrl_title">Restaurant review</string>
+    <string name="rrl_ok">Add review</string>
+    <string name="rrl_cancel">Cancel</string>
+    <string name="rrl_name">Please enter a name</string>
+    <string name="rrl_reviewe">Please enter a review</string>
+    
     <string name="app_name">TechnionFood</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -31,5 +42,5 @@
         <item>@drawable/promotion</item>
         <item>@drawable/process</item>
         <item>@drawable/info</item>
-    </array>
+    </array>    
 </resources>

@@ -14,13 +14,10 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
@@ -241,8 +238,8 @@ public class RestaurantsFragment extends Fragment{
 				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int id) {
 						dialog.cancel();
-						getParentFragment().getActivity().finish();
-						startActivity(new Intent(getParentFragment().getActivity().getApplicationContext(), RestaurantsFragment.class));
+						GetRestaurantsListFromServer thread = new GetRestaurantsListFromServer();
+				 		thread.execute();
 					}
 				  })
 				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
