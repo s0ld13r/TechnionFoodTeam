@@ -112,11 +112,12 @@
 	    android:textSize="20sp"
 	    android:text="@string/menu" />
 	
-    <ListView
+    <ExpandableListView
         android:id="@+id/listOfRestaurants"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="2dp" />
+        android:dividerHeight="2dp" 
+        android:groupIndicator="@drawable/settings_selector"/>
 
     
 

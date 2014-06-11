@@ -20,11 +20,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ import com.gmail.technionfoodteam.model.Restaurant;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RestaurantFragment extends Fragment {
-	private ListView list;
+	private ExpandableListView list;
 	private DishesAdapter adapter;
 	public static String RESTAURANT_ID="restaurant_id";
 	private int restaurantId;
@@ -47,27 +46,31 @@ public class RestaurantFragment extends Fragment {
 	 public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_restaurant, container, false);
 		
-		list = (ListView)rootView.findViewById(R.id.listOfRestaurants);
+		list = (ExpandableListView)rootView.findViewById(R.id.listOfRestaurants);
 		logoIv = (ImageView)rootView.findViewById(R.id.restLogo);
 		navigateBtn = (ImageButton)rootView.findViewById(R.id.navigateToRestaurantBtn);
 		restaurantNameTv = (TextView)rootView.findViewById(R.id.restaurantName);
 		distanceTv = (TextView)rootView.findViewById(R.id.restaurantDistanceTo);
 		rating = (RatingBar)rootView.findViewById(R.id.ratingOfRestaurant);
 
-		list.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-
-				Bundle bundle = new Bundle();
-				int id = ((Dish)((DishesAdapter)arg0.getAdapter()).getItem(arg2)).getId();
-				bundle.putInt(DishFragment.DISH_ID, id);
-				
-				Fragment fragment = Fragment.instantiate(getActivity(), (new DishFragment()).getClass().getName());
-	   			fragment.setArguments(bundle);
-	    		((MainActivity)getActivity()).changeFragment(fragment);  	
-			}
-		});
+		list.setOnChildClickListener(new OnChildClickListener() {
+				 
+	            @Override
+	            public boolean onChildClick(ExpandableListView parent, View v,
+	                    int groupPosition, int childPosition, long id) {
+	            	
+	            	
+					int dishId = ((Dish)((DishesAdapter)parent.getExpandableListAdapter()).getChild(groupPosition, childPosition)).getId();
+					Bundle bundle = new Bundle();
+					bundle.putInt(DishFragment.DISH_ID, dishId);
+					
+					Fragment fragment = Fragment.instantiate(getActivity(), (new DishFragment()).getClass().getName());
+		   			fragment.setArguments(bundle);
+		    		((MainActivity)getActivity()).changeFragment(fragment);
+	                return false;
+	            }
+	        });
+			
 		return rootView;
 	}
 	@Override
@@ -129,7 +132,7 @@ public class RestaurantFragment extends Fragment {
 				ImageLoader.getInstance().displayImage(currentRestaurant.getPathToLogo(), logoIv);
 				dishesArr = obj.getJSONArray("dishes");
 				
-				adapter = new DishesAdapter(dishesArr,getActivity());
+				adapter = new DishesAdapter(dishesArr,getActivity(),((MainActivity)getActivity()).getDishTypeToValueMap());
 				list.setAdapter(adapter);
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
