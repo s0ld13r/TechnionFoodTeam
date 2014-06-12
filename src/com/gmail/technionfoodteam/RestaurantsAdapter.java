@@ -23,20 +23,22 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class RestaurantsAdapter extends BaseAdapter {
 	public static final int BY_RANKING = 0;
 	public static final int BY_DISTANCE = 1;
-	private int orderBy;
+	private int orderBy = -1;
 	private LinkedList<Restaurant> restaurants;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
     private TechnionFoodApp app;
     
     public RestaurantsAdapter(TechnionFoodApp myApp) {
-		orderBy = BY_RANKING;
+		
 		restaurants = new LinkedList<Restaurant>();
 		this.app = myApp;
+		orderBy = -1;
 	}
     public RestaurantsAdapter(JSONArray arr,TechnionFoodApp myApp) {
-		orderBy = BY_RANKING;
+		
 		setRestaurantsListBy(arr, BY_RANKING);
 		this.app = myApp;
+		orderBy = BY_RANKING;
 	}
 	private void setRestaurantsListBy(JSONArray arr, int order){
 		restaurants = new LinkedList<Restaurant>();

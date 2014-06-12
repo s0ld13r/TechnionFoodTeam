@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="search_dishTypes">Select dich types</string>
+    <string name="search_distance">Distance not greater than</string>
+    <string name="search_searchBtn">Search</string>
+    <string name="search_price">Price not greater than</string>
+    <string name="search_time">Only places that open at least</string>
 	<string name="drl_title">Dish review</string>
     <string name="drl_ok">Add review</string>
     <string name="drl_cancel">Cancel</string>
@@ -11,6 +16,9 @@
     <string name="rrl_cancel">Cancel</string>
     <string name="rrl_name">Please enter a name</string>
     <string name="rrl_reviewe">Please enter a review</string>
+    
+    <string name="ri_title">Information</string>
+    <string name="ri_cancel">Cancel</string>
     
     <string name="app_name">TechnionFood</string>
     <string name="action_settings">Settings</string>

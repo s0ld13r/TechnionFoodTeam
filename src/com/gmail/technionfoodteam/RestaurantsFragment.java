@@ -32,9 +32,8 @@ import com.gmail.technionfoodteam.model.Restaurant;
 public class RestaurantsFragment extends Fragment{
 	private static RestaurantsAdapter restaurantsAdapter;
 	
-	SectionsPagerAdapter mSectionsPagerAdapter;  
-    ViewPager mViewPager; 
-
+	private SectionsPagerAdapter mSectionsPagerAdapter;  
+    private ViewPager mViewPager; 
     @Override
  	public void onDetach() {
  	    super.onDetach();
@@ -230,6 +229,7 @@ public class RestaurantsFragment extends Fragment{
 				TechnionFoodApp.isJSONError(result);
 				arr = new JSONArray(result);
 				restaurantsAdapter.setRestaurants(arr, RestaurantsAdapter.BY_RANKING);
+				
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						getActivity());

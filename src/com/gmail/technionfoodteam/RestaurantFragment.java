@@ -55,6 +55,7 @@ public class RestaurantFragment extends Fragment {
 	private ImageButton navigateBtn;
 	private ImageButton callBtn;
 	private ImageButton restReviewBtn;
+	private ImageButton infoBtn;
 	private RestaurantReview review;
 	@Override
 	 public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,7 +107,15 @@ public class RestaurantFragment extends Fragment {
 				callFunc(v);
 			}
 		});
+		infoBtn = (ImageButton)rootView.findViewById(R.id.informationBtn);
+		infoBtn.setOnClickListener(new View.OnClickListener() {
 			
+			@Override
+			public void onClick(View v) {
+				showInformationDialog();
+				
+			}
+		});
 		return rootView;
 	}
 	@Override
@@ -218,7 +227,20 @@ public class RestaurantFragment extends Fragment {
         Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number)); 
         startActivity(callIntent);
 	}
+	private void showInformationDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle(getString(R.string.ri_title))
+	    .setCancelable(false)
+	    .setNegativeButton(getString(R.string.ri_cancel), new OnClickListener() {			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();					
+			}
+		})
+		.setMessage(currentRestaurant.viewOpeningHours());
 	
+    builder.show();
+	}
 	private void showRatingDialog(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
