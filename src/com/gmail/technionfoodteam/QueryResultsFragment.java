@@ -127,7 +127,7 @@ public class QueryResultsFragment extends Fragment{
         public static final String OREDERING = "orderBy";  
         private ListView list;
         public DummySectionFragment() {  } 
-  
+        int sortingBy;
         @Override  
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         	View rootView = inflater.inflate(R.layout.fragment_list, container, false);   
@@ -136,9 +136,7 @@ public class QueryResultsFragment extends Fragment{
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
     		list = (ListView)view.findViewById(R.id.listOfItems);
-    		list.setAdapter(queryDishesAdapter);
-    		int sortingBy = getArguments().getInt(OREDERING);
-    		queryDishesAdapter.setOrderTo(sortingBy);
+    		list.setAdapter(queryDishesAdapter);   		
     		list.setOnItemClickListener(new OnItemClickListener() {
 
     			@Override
@@ -156,6 +154,7 @@ public class QueryResultsFragment extends Fragment{
     		});
         	super.onViewCreated(view, savedInstanceState);
         }
+      
     	@Override
     	public void onDetach() {
     	    super.onDetach();

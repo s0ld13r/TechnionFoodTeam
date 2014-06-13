@@ -90,15 +90,9 @@ public class SearchFragment extends Fragment {
 							}
 						}
 					}
-					/*if(dishTypesArray[0].isChecked){
+					if(arr.length() == 0){
 						arr.put(0);
-					}else{
-						for(int i = 1; i<dishTypesArray.length;i++){
-							if(dishTypesArray[i].isChecked){
-								arr.put(i);
-							}
-						}
-					}*/
+					}
 					obj.put(JSON_TYPES, arr);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -357,9 +351,11 @@ public class SearchFragment extends Fragment {
 				TechnionFoodApp.isJSONError(result);
 				arr = new JSONArray(result);
 				//adapter
-				adapter.update(arr);
+				
 				Fragment fragment = Fragment.instantiate(getActivity(), (new QueryResultsFragment()).getClass().getName());
 				((MainActivity)getActivity()).changeFragment(fragment);
+				adapter.setOrderTo(0);
+				adapter.update(arr);
 				
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(

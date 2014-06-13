@@ -26,16 +26,17 @@ public class QueryDishesAdapter extends BaseAdapter {
 	public static final int ORDER_RANKING = 1;
 	public static final int ORDER_DISTANCE = 2;
 
-	private int orderBy = -1;
+	private int orderedBy ;
 	private LinkedList<Dish> dishes;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
     private Activity activity;
     public QueryDishesAdapter(Activity activity){
     	this.activity =  activity;
     	dishes = new LinkedList<Dish>();
-    	orderBy = -1;
+    	orderedBy = 0;
     }
 	public void update(JSONArray arr) {
+		
 		dishes = new LinkedList<Dish>();
 		for(int i=0; i<arr.length();i++){
 			try {
@@ -44,6 +45,7 @@ public class QueryDishesAdapter extends BaseAdapter {
 				e.printStackTrace();
 			}
 		}
+		setOrderTo(orderedBy);
 		notifyDataSetChanged();
 	}
 	@Override
@@ -101,7 +103,7 @@ public class QueryDishesAdapter extends BaseAdapter {
 		public RatingBar ratingRb;
 	}
 	public void setOrderTo(int newOrder){
-		if(newOrder != orderBy){
+		//if(newOrder != orderBy){
 			if(newOrder == ORDER_RANKING){
 				Comparator<Dish> rankingComperator = new Comparator<Dish>() {					
 					@Override
@@ -136,8 +138,8 @@ public class QueryDishesAdapter extends BaseAdapter {
 				
 				Collections.sort(dishes, priceComperator);
 			}
-			orderBy = newOrder;
+			orderedBy = newOrder;
 			notifyDataSetChanged();
 		}
-	}
+	//}
 }
