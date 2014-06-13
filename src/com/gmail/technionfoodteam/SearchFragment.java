@@ -1,15 +1,29 @@
 package com.gmail.technionfoodteam;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Time;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +52,10 @@ public class SearchFragment extends Fragment {
 	private int distance = -1;
 	private double price = -1;
 	private long time = -1;
+	JSONObject obj = new JSONObject();
 	private Button searchBtn;
 	DishTypesValues[] dishTypesArray;
+	QueryDishesAdapter adapter;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -54,7 +70,7 @@ public class SearchFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				JSONObject obj = new JSONObject();
+				
 				try {
 					obj.put(JSON_DISTANCE, distance);
 					obj.put(JSON_PRICE,price);
@@ -64,7 +80,17 @@ public class SearchFragment extends Fragment {
 					obj.put(JSON_LNG, location.getLongitude());
 					JSONArray arr = new JSONArray();
 					
-					if(dishTypesArray[0].isChecked){
+					int len = dishTypesList.getCount();
+					SparseBooleanArray checked = dishTypesList.getCheckedItemPositions();
+					for (int i = 0; i < len; i++){
+						if (checked.get(i)) {
+							arr.put(i);
+							if(i==0){
+								break;
+							}
+						}
+					}
+					/*if(dishTypesArray[0].isChecked){
 						arr.put(0);
 					}else{
 						for(int i = 1; i<dishTypesArray.length;i++){
@@ -72,13 +98,15 @@ public class SearchFragment extends Fragment {
 								arr.put(i);
 							}
 						}
-					}
+					}*/
 					obj.put(JSON_TYPES, arr);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Toast.makeText(getActivity(), obj.toString(), Toast.LENGTH_LONG).show();
+				SendQueryToServer thread = new SendQueryToServer();
+		    	thread.execute();
 			}
 		});
 		return view;
@@ -90,12 +118,13 @@ public class SearchFragment extends Fragment {
 		initPriceSpinner();
 		initTimeSpinner();
 		initTypesList();
+		adapter = ((MainActivity)getActivity()).getQueryDishesAdapter();
 	}
 	
 	public void initTypesList(){
 		HashMap<Integer, String> map = ((MainActivity)getActivity()).getDishTypeToValueMap();
 		dishTypesArray = new DishTypesValues[map.size()+1];
-		dishTypesArray[0] = new DishTypesValues(0, true, "All types");
+		dishTypesArray[0] = new DishTypesValues(0, false, "All types");
 		for(Entry<Integer, String> key : map.entrySet()){
 			dishTypesArray[key.getKey()] = new DishTypesValues(key.getKey(), false, key.getValue());
 		}
@@ -104,7 +133,7 @@ public class SearchFragment extends Fragment {
        
 		dishTypesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         dishTypesList.setAdapter(adapter);
-        dishTypesList.setItemChecked(0, true);
+        //dishTypesList.setItemChecked(0, true);
         dishTypesList.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -280,6 +309,81 @@ public class SearchFragment extends Fragment {
 		@Override
 		public String toString() {
 			return stringRepresentation;		
+		}
+	}
+	
+	
+	
+	
+	private class SendQueryToServer extends AsyncTask<Void, Void, String>{
+		
+		@Override
+		protected String doInBackground(Void... params) {
+			try{
+				String path = TechnionFoodApp.pathToServer + "service/query";
+				HttpClient client = new DefaultHttpClient();
+				URL url = new URL(path);
+				HttpPost post = new HttpPost(url.toString());
+				StringEntity se = new StringEntity(obj.toString());  
+				se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+				post.setHeader("Accept", "application/json");
+				post.setHeader("Content-type", "application/json");
+				post.setEntity(se);
+				HttpResponse response = client.execute(post);
+				int statusCode = response.getStatusLine().getStatusCode();
+				if((statusCode < HttpURLConnection.HTTP_OK) || (statusCode >= 300)){
+					JSONObject err = new JSONObject();
+					err.put(TechnionFoodApp.JSON_ERROR, "Server error. Can not get information from server.");
+					return err.toString();
+				}
+				String str = EntityUtils.toString(response.getEntity());
+				response.getEntity().consumeContent();
+				return str;
+			}catch(Exception ex){
+				JSONObject err = new JSONObject();
+				try {
+					err.put(TechnionFoodApp.JSON_ERROR, "Connection error: "+ ex.getMessage());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return err.toString();
+			}
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			JSONArray arr;
+			try {
+				TechnionFoodApp.isJSONError(result);
+				arr = new JSONArray(result);
+				//adapter
+				adapter.update(arr);
+				Fragment fragment = Fragment.instantiate(getActivity(), (new QueryResultsFragment()).getClass().getName());
+				((MainActivity)getActivity()).changeFragment(fragment);
+				
+			} catch (Exception e) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						getActivity());
+				alertDialogBuilder.setTitle("Error").setMessage(e.getMessage());
+				alertDialogBuilder.setCancelable(false)
+				.setPositiveButton("Retry",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						SendQueryToServer thread = new SendQueryToServer();
+				    	thread.execute();
+					}
+				  })
+				  .setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						//getActivity().finish();
+					}
+				});
+				
+				alertDialogBuilder.create().show();
+				e.printStackTrace();
+			}
+			super.onPostExecute(result);
 		}
 	}
 }

@@ -1,11 +1,15 @@
 package com.gmail.technionfoodteam;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +21,19 @@ import android.widget.TextView;
 import com.gmail.technionfoodteam.model.Dish;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DealsAdapter extends BaseAdapter {
+public class QueryDishesAdapter extends BaseAdapter {
+	public static final int ORDER_PRICE = 0;
+	public static final int ORDER_RANKING = 1;
+	public static final int ORDER_DISTANCE = 2;
+
+	private int orderBy = -1;
 	private LinkedList<Dish> dishes;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
-    private Context context;
-    public DealsAdapter(Context context){
-    	this.context =  context;
+    private Activity activity;
+    public QueryDishesAdapter(Activity activity){
+    	this.activity =  activity;
     	dishes = new LinkedList<Dish>();
+    	orderBy = -1;
     }
 	public void update(JSONArray arr) {
 		dishes = new LinkedList<Dish>();
@@ -56,7 +66,7 @@ public class DealsAdapter extends BaseAdapter {
 		View view = convertView;
 		final ViewHolder holder;
 		if(convertView == null){
-			LayoutInflater inflater = (LayoutInflater) context
+			LayoutInflater inflater = (LayoutInflater) activity
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.deal_list_item, parent, false);
 			holder = new ViewHolder();
@@ -89,5 +99,45 @@ public class DealsAdapter extends BaseAdapter {
 		public TextView restTv;
 		//public TextView priceUnitsTv;
 		public RatingBar ratingRb;
+	}
+	public void setOrderTo(int newOrder){
+		if(newOrder != orderBy){
+			if(newOrder == ORDER_RANKING){
+				Comparator<Dish> rankingComperator = new Comparator<Dish>() {					
+					@Override
+					public int compare(Dish lhs, Dish rhs) {
+						return (Double.valueOf(lhs.getRanking())).compareTo(Double.valueOf(rhs.getRanking()));
+					}
+				};
+				Collections.sort(dishes, Collections.reverseOrder(rankingComperator));
+				
+			}else if(newOrder == ORDER_DISTANCE){
+				Comparator<Dish> distanceComperator = new Comparator<Dish>() {					
+					@Override
+					public int compare(Dish lhs, Dish rhs) {
+						Location lhsLocation = new Location("Left POint");
+						lhsLocation.setLatitude(lhs.getRestLat());
+						lhsLocation.setLongitude(lhs.getRestLng());
+						Location rhsLocation = new Location("Right POint");
+						rhsLocation.setLatitude(rhs.getRestLat());
+						rhsLocation.setLongitude(rhs.getRestLng());
+						Location current = ((TechnionFoodApp)activity.getApplication()).getCurrentLocation();
+						return Float.valueOf(current.distanceTo(lhsLocation)).compareTo(Float.valueOf(current.distanceTo(rhsLocation)));
+					}
+				};
+				Collections.sort(dishes, distanceComperator);
+			}else if(newOrder == ORDER_PRICE){
+				Comparator<Dish> priceComperator = new Comparator<Dish>() {					
+					@Override
+					public int compare(Dish lhs, Dish rhs) {
+						return (Double.valueOf(lhs.getPrice())).compareTo(Double.valueOf(rhs.getPrice()));
+					}
+				};
+				
+				Collections.sort(dishes, priceComperator);
+			}
+			orderBy = newOrder;
+			notifyDataSetChanged();
+		}
 	}
 }

@@ -60,7 +60,7 @@ public class RestaurantFragment extends Fragment {
 	@Override
 	 public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_restaurant, container, false);
-		list = (ExpandableListView)rootView.findViewById(R.id.listOfRestaurants);
+		list = (ExpandableListView)rootView.findViewById(R.id.listOfItems);
 		logoIv = (ImageView)rootView.findViewById(R.id.restLogo);
 		restaurantNameTv = (TextView)rootView.findViewById(R.id.restaurantName);
 		distanceTv = (TextView)rootView.findViewById(R.id.restaurantDistanceTo);

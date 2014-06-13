@@ -53,6 +53,8 @@ public class MainActivity extends FragmentActivity {
  
     private ArrayList<NavDrawerItem> navDrawerItems;
     private NavDrawerListAdapter adapter;
+    
+    private QueryDishesAdapter queryDishesAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -120,7 +122,8 @@ public class MainActivity extends FragmentActivity {
             displayView(0);
         }
         GetDishTypesFromServer thread = new GetDishTypesFromServer();
-        thread.execute();  	
+        thread.execute(); 
+        queryDishesAdapter = new QueryDishesAdapter(this);
     }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -320,6 +323,9 @@ public class MainActivity extends FragmentActivity {
     		thread.execute();
     	}
     	return typeToValueMap;
+    }
+    public QueryDishesAdapter getQueryDishesAdapter(){
+    	return queryDishesAdapter;
     }
     
 }
