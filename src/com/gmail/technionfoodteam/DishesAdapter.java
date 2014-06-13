@@ -26,11 +26,15 @@ public class DishesAdapter extends BaseExpandableListAdapter  {
 	private HashMap<Integer, String> typeValuesMap;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
     private Context context;
-	public DishesAdapter(JSONArray arr, Context context, HashMap<Integer, String> valuesMap) {
+	public DishesAdapter(Context context, HashMap<Integer, String> valuesMap){
 		typeValuesMap = valuesMap;
 		map = new HashMap<Integer, LinkedList<Dish>>();
 		keys = new LinkedList<Integer>();
-		
+		this.context = context;
+	}
+    public void update(JSONArray arr) {
+    	map = new HashMap<Integer, LinkedList<Dish>>();
+		keys = new LinkedList<Integer>();
 		for(int i=0; i<arr.length();i++){
 			try {
 				Dish dish = Dish.fromJSON(arr.getJSONObject(i));
@@ -44,7 +48,7 @@ public class DishesAdapter extends BaseExpandableListAdapter  {
 				e.printStackTrace();
 			}
 		}
-		this.context = context;
+		notifyDataSetChanged();
 	}
 	@Override
     public Object getChild(int groupPosition, int childPosititon) {

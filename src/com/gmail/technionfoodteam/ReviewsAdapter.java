@@ -18,7 +18,7 @@ import com.gmail.technionfoodteam.model.Review;
 public class ReviewsAdapter extends BaseAdapter {
 	private LinkedList<Review> reviews;
     private Context context;
-	public ReviewsAdapter(JSONArray arr, Context context) {
+    public void update(JSONArray arr) {
 		reviews = new LinkedList<Review>();
 		for(int i=0; i<arr.length();i++){
 			try {
@@ -27,6 +27,10 @@ public class ReviewsAdapter extends BaseAdapter {
 				e.printStackTrace();
 			}
 		}
+		notifyDataSetChanged();
+	}
+    public ReviewsAdapter(Context context) {
+		reviews = new LinkedList<Review>();
 		this.context = context;
 	}
 	@Override

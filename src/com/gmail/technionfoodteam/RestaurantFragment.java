@@ -3,8 +3,10 @@ package com.gmail.technionfoodteam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,6 +28,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +38,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -43,8 +48,9 @@ import com.gmail.technionfoodteam.model.RestaurantReview;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class RestaurantFragment extends Fragment {
-	private ExpandableListView list;
-	private DishesAdapter adapter;
+
+	private static DishesAdapter dishesAdapter;
+	private static ReviewsAdapter reviewsAdapter;
 	public static String RESTAURANT_ID="restaurant_id";
 	private int restaurantId;
 	private Restaurant currentRestaurant;
@@ -57,10 +63,11 @@ public class RestaurantFragment extends Fragment {
 	private ImageButton restReviewBtn;
 	private ImageButton infoBtn;
 	private RestaurantReview review;
+	private SectionsPagerAdapter mSectionsPagerAdapter;  
+    private ViewPager mViewPager; 
 	@Override
 	 public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.activity_restaurant, container, false);
-		list = (ExpandableListView)rootView.findViewById(R.id.listOfItems);
 		logoIv = (ImageView)rootView.findViewById(R.id.restLogo);
 		restaurantNameTv = (TextView)rootView.findViewById(R.id.restaurantName);
 		distanceTv = (TextView)rootView.findViewById(R.id.restaurantDistanceTo);
@@ -75,23 +82,7 @@ public class RestaurantFragment extends Fragment {
 				showRatingDialog();
 			}
 		});
-		list.setOnChildClickListener(new OnChildClickListener() {
-				 
-	            @Override
-	            public boolean onChildClick(ExpandableListView parent, View v,
-	                    int groupPosition, int childPosition, long id) {
-	            	
-	            	
-					int dishId = ((Dish)((DishesAdapter)parent.getExpandableListAdapter()).getChild(groupPosition, childPosition)).getId();
-					Bundle bundle = new Bundle();
-					bundle.putInt(DishFragment.DISH_ID, dishId);
-					
-					Fragment fragment = Fragment.instantiate(getActivity(), (new DishFragment()).getClass().getName());
-		   			fragment.setArguments(bundle);
-		    		((MainActivity)getActivity()).changeFragment(fragment);
-	                return false;
-	            }
-	        });
+		
 		navigateBtn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -115,13 +106,18 @@ public class RestaurantFragment extends Fragment {
 				showInformationDialog();
 				
 			}
-		});
+		}); 
+		mViewPager = (ViewPager) rootView.findViewById(R.id.restPager);
 		return rootView;
 	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		restaurantId = getArguments().getInt(RESTAURANT_ID, 1);
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		dishesAdapter = new DishesAdapter(getActivity(),((MainActivity)getActivity()).getDishTypeToValueMap());
+		reviewsAdapter = new ReviewsAdapter(getActivity());
 		GetRestaurantFromServer thread = new GetRestaurantFromServer();
 		thread.execute();
 		
@@ -167,6 +163,7 @@ public class RestaurantFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			JSONArray dishesArr = new JSONArray();
+			JSONArray reviewsArr = new JSONArray();
 			try {
 				TechnionFoodApp.isJSONError(result);
 				JSONObject obj = new JSONObject(result);
@@ -178,9 +175,12 @@ public class RestaurantFragment extends Fragment {
 				rating.setRating((float)currentRestaurant.getRanking());
 				ImageLoader.getInstance().displayImage(currentRestaurant.getPathToLogo(), logoIv);
 				dishesArr = obj.getJSONArray("dishes");
+				reviewsArr = obj.getJSONArray("reviews");
 				
-				adapter = new DishesAdapter(dishesArr,getActivity(),((MainActivity)getActivity()).getDishTypeToValueMap());
-				list.setAdapter(adapter);
+				dishesAdapter.update(dishesArr);
+				reviewsAdapter.update(reviewsArr);
+				
+
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						getActivity());
@@ -296,6 +296,7 @@ public class RestaurantFragment extends Fragment {
 				}
 				String str = EntityUtils.toString(response.getEntity());
 				response.getEntity().consumeContent();
+				
 				return str;
 			}catch(Exception ex){
 				JSONObject err = new JSONObject();
@@ -316,6 +317,7 @@ public class RestaurantFragment extends Fragment {
 				obj = new JSONObject(result);
 				double res = obj.getDouble(RestaurantReview.JSON_RANKING);
 				rating.setRating((float)res);
+				reviewsAdapter.addReview(review);
 				
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -341,4 +343,128 @@ public class RestaurantFragment extends Fragment {
 			super.onPostExecute(result);
 		}
 	}
+	
+	   public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	    	
+	        public  SectionsPagerAdapter(android.support.v4.app.FragmentManager fm) {  
+	            super(fm);  
+	        }  
+	  
+	        @Override  
+	        public Fragment getItem(int position) {  
+	            // getItem is called to instantiate the fragment for the given page.  
+	            // Return a DummySectionFragment (defined as a static inner class  
+	            // below) with the page number as its lone argument.  
+	            Fragment fragment = Fragment.instantiate(getActivity(), RestaurantMenuFragment.class.getName());  
+	            if(position == 0){
+	            	return fragment;
+	            }  
+	            fragment =   Fragment.instantiate(getActivity(), RestaurantReviewFragment.class.getName());  
+	            return fragment;  
+	        }  
+	  
+	        @Override  
+	        public int getCount() {  
+	            // Show 3 total pages.  
+	            return 2;  
+	        }  
+	  
+	        @Override  
+	        public CharSequence getPageTitle(int position) {  
+	            Locale l = Locale.getDefault();  
+	            switch (position) {  
+	            case 0:  
+	                return "Menu".toUpperCase(l);  
+	            case 1:  
+	                return "Reviews".toUpperCase(l);
+	            }  
+	            return null;  
+	        }  
+	    }  
+		
+		
+	    public static class RestaurantMenuFragment extends Fragment {  
+	        
+	        private ExpandableListView list;
+	        public RestaurantMenuFragment() {  } 
+	  
+	        @Override  
+	        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	        	View rootView = inflater.inflate(R.layout.expandable_list_layout, container, false);   
+	            return rootView;  
+	        }  
+	        @Override
+	        public void onViewCreated(View view, Bundle savedInstanceState) {
+	    		list = (ExpandableListView)view.findViewById(R.id.expListOfItems);
+	    		list.setAdapter(dishesAdapter);
+	    		list.setOnChildClickListener(new OnChildClickListener() {
+					 
+		            @Override
+		            public boolean onChildClick(ExpandableListView parent, View v,
+		                    int groupPosition, int childPosition, long id) {
+		            	
+		            	
+						int dishId = ((Dish)((DishesAdapter)parent.getExpandableListAdapter()).getChild(groupPosition, childPosition)).getId();
+						Bundle bundle = new Bundle();
+						bundle.putInt(DishFragment.DISH_ID, dishId);
+						
+						Fragment fragment = Fragment.instantiate(getActivity(), (new DishFragment()).getClass().getName());
+			   			fragment.setArguments(bundle);
+			    		((MainActivity)getActivity()).changeFragment(fragment);
+		                return false;
+		            }
+		        });
+	        	super.onViewCreated(view, savedInstanceState);
+	        }
+	    	@Override
+	    	public void onDetach() {
+	    	    super.onDetach();
+
+	    	    try {
+	    	        Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+	    	        childFragmentManager.setAccessible(true);
+	    	        childFragmentManager.set(this, null);
+
+	    	    } catch (NoSuchFieldException e) {
+	    	        throw new RuntimeException(e);
+	    	    } catch (IllegalAccessException e) {
+	    	        throw new RuntimeException(e);
+	    	    }
+	    	}
+	    } 
+	    
+	    
+public static class RestaurantReviewFragment extends Fragment {  
+	        
+	        private ListView list;
+	        public RestaurantReviewFragment() {  } 
+	  
+	        @Override  
+	        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	        	View rootView = inflater.inflate(R.layout.fragment_list, container, false);   
+	            return rootView;  
+	        }  
+	        @Override
+	        public void onViewCreated(View view, Bundle savedInstanceState) {
+	    		list = (ListView)view.findViewById(R.id.listOfItems);
+	    		list.setAdapter(reviewsAdapter);
+	    		
+	        	super.onViewCreated(view, savedInstanceState);
+	        }
+	    	@Override
+	    	public void onDetach() {
+	    	    super.onDetach();
+
+	    	    try {
+	    	        Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+	    	        childFragmentManager.setAccessible(true);
+	    	        childFragmentManager.set(this, null);
+
+	    	    } catch (NoSuchFieldException e) {
+	    	        throw new RuntimeException(e);
+	    	    } catch (IllegalAccessException e) {
+	    	        throw new RuntimeException(e);
+	    	    }
+	    	}
+	    } 
 }

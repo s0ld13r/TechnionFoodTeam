@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -133,8 +132,9 @@ public class DishFragment extends Fragment {
 				ImageLoader.getInstance().displayImage(currentDish.getPhoto(), logoIv);
 				reviewsArr = obj.getJSONArray("reviews");
 				
-				adapter = new ReviewsAdapter(reviewsArr,getActivity());
+				adapter = new ReviewsAdapter(getActivity());
 				list.setAdapter(adapter);
+				adapter.update(reviewsArr);
 			} catch (Exception e) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						getActivity());
