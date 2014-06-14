@@ -174,6 +174,7 @@ public class DishFragment extends Fragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 	    View dialoglayout = inflater.inflate(R.layout.dish_review_layout, null);
 	    final EditText nameEditText = (EditText)dialoglayout.findViewById(R.id.drlNameEditText);
+	    nameEditText.setText(((MainActivity)getActivity()).getCurrentUsername());
 	    final EditText reviewEditText = (EditText)dialoglayout.findViewById(R.id.drlReviewEditText);
 	    final RatingBar reviewRatingBar = (RatingBar)dialoglayout.findViewById(R.id.drlRating);
 	    builder.setView(dialoglayout);

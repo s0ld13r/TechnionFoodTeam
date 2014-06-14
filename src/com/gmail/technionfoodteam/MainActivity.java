@@ -353,4 +353,11 @@ public class MainActivity extends FragmentActivity {
     public Location getCurrentLocation(){
     	return ((TechnionFoodApp)getApplication()).getCurrentLocation();
     }
+    public String getCurrentUsername(){
+    	//SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+    	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    	String username = sharedPref.getString(getString(R.string.pref_username), getString(R.string.pref_username_default));
+    	return username ;  	
+    }
+    
 }

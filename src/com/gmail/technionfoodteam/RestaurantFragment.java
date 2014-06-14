@@ -246,6 +246,7 @@ public class RestaurantFragment extends Fragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 	    View dialoglayout = inflater.inflate(R.layout.restaurant_review_layout, null);
 	    final EditText nameEditText = (EditText)dialoglayout.findViewById(R.id.rrlNameEditText);
+	    nameEditText.setText(((MainActivity)getActivity()).getCurrentUsername());
 	    final EditText reviewEditText = (EditText)dialoglayout.findViewById(R.id.rrlReviewEditText);
 	    final RatingBar reviewRatingBar = (RatingBar)dialoglayout.findViewById(R.id.rrlRating);
 	    builder.setView(dialoglayout);
