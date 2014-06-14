@@ -1,54 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="search_dishTypes">Select dich types</string>
-    <string name="search_distance">Distance not greater than</string>
-    <string name="search_searchBtn">Search</string>
-    <string name="search_price">Price not greater than</string>
-    <string name="search_time">Only places that open at least</string>
-	<string name="drl_title">Dish review</string>
-    <string name="drl_ok">Add review</string>
-    <string name="drl_cancel">Cancel</string>
-    <string name="drl_name">Please enter a name</string>
-    <string name="drl_reviewe">Please enter a review</string>
-    
-    <string name="rrl_title">Restaurant review</string>
-    <string name="rrl_ok">Add review</string>
-    <string name="rrl_cancel">Cancel</string>
-    <string name="rrl_name">Please enter a name</string>
-    <string name="rrl_reviewe">Please enter a review</string>
-    
-    <string name="ri_title">Information</string>
-    <string name="ri_cancel">Cancel</string>
-    
-    <string name="app_name">TechnionFood</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-	<string name="start">Trying to establish connection with server</string>
-	<string name="rest_logo">Restaurant logo</string>
-	<string name="distance">Distance: </string>
-	<string name="shekels">NIS</string>
-	<string name="navigateTo">Navigate to restaurant</string>
-	<string name="reviews">Reviews</string>
-	<string name="menu">Menu</string>
-	<string name="info">Info</string>
-	<string name="rate">Rate</string>
-	<string name="call">Call</string>
+<!--
+/* //device/apps/common/assets/res/any/strings.xml
+**
+** Copyright 2006, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 	
-	<string-array name="nav_drawer_items">
-        <item >Home</item>
-        <item >Search</item>
-        <item >Deals</item>
-        <item >Settings</item>
-        <item >About us</item>
-    </string-array>
-     
-    <!-- Nav Drawer List Item Icons -->
-    <!-- Keep them in order as the titles are in -->
-    <array name="nav_drawer_icons">
-        <item>@drawable/home</item>
-        <item>@drawable/find</item>
-        <item>@drawable/promotion</item>
-        <item>@drawable/process</item>
-        <item>@drawable/info</item>
-    </array>    
+    <!--  Strings for possible PreferenceActivity Back/Next buttons -->
+    <string name="back_button_label">Back</string>
+    <string name="next_button_label">Next</string>
+
+    <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
+    <string name="skip_button_label">Skip</string>
+
 </resources>

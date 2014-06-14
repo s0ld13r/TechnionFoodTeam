@@ -13,11 +13,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -58,6 +62,8 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	PreferenceManager.setDefaultValues(this, R.xml.prefrences,
+                false);
     	typeToValueMap = new HashMap<Integer, String>();
     	setContentView(R.layout.main_slide_menu_layout);
     	mTitle = mDrawerTitle = getTitle();
@@ -217,6 +223,7 @@ public class MainActivity extends FragmentActivity {
 		mDrawerList.setSelection(position);
 		//setTitle(navMenuTitles[position]);
     }
+
     public void changeFragment(Fragment fragment){
     	if (fragment != null) {
     		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -327,5 +334,23 @@ public class MainActivity extends FragmentActivity {
     public QueryDishesAdapter getQueryDishesAdapter(){
     	return queryDishesAdapter;
     }
-    
+    public boolean areDataConstrainsAllowed(){
+    	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    	return sharedPref.getBoolean(getString(R.string.pref_are_data_constrains_allowed), false);
+    }
+    public int getDistanceConstrain(){
+    	//SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+    	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    	String distance = sharedPref.getString(getString(R.string.pref_distance_constrain), getString(R.string.pref_distance_constrain_default));
+    	return Integer.parseInt(distance);   	
+    }
+    public int getPriceConstrain(){
+    	//SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+    	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+    	String price = sharedPref.getString(getString(R.string.pref_price_constrain), getString(R.string.pref_price_constrain_default));
+    	return Integer.parseInt(price);   	
+    }
+    public Location getCurrentLocation(){
+    	return ((TechnionFoodApp)getApplication()).getCurrentLocation();
+    }
 }

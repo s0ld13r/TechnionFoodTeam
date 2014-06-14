@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="pref_price_constrain_default">50</string>
+    <string name="pref_distance_constrain_default">1000</string> 
+    <string name="pref_data_constrains">Data constrains</string>
+    <string name="pref_are_data_constrains_allowed">areDataConstrainsAllowed</string>
+    
+    <string name="pref_price_constrain">priceConstrain</string>
+    <string name="pref_price_constrain_title">Maximum allowed price in NIS</string>
+    <string name="pref_price_constrain_dialog_title">Please enter prices upper bound</string>
+    
+    <string name="pref_distance_constrain">distanceConstrain</string>
+    <string name="pref_distance_constrain_title">Maximum allowed distance in meters</string>
+    <string name="pref_distance_constrain_dialog_title">Please enter distance upper bound in meters</string>
+    
+    <string name="pref_allow_notifications">Allow notifications</string>
+    <string name="pref_main_settings">Main settings</string>
+    <string name="pref_are_notifications_allowed">areNotificationsAllowed</string>
+    <string name="pref_user_cat">User prefrences</string>
+    <string name="pref_username">username</string>
+    <string name="pref_username_default">Anonymus</string>
+    <string name="pref_username_title">Current username</string>
+    <string name="pref_username_dialog_title">Please enter username</string>
+    <string name="search_dishTypes">Select dich types</string>
+    <string name="search_distance">Distance not greater than</string>
+    <string name="search_searchBtn">Search</string>
+    <string name="search_price">Price not greater than</string>
+    <string name="search_time">Only places that open at least</string>
+	<string name="drl_title">Dish review</string>
+    <string name="drl_ok">Add review</string>
+    <string name="drl_cancel">Cancel</string>
+    <string name="drl_name">Please enter a name</string>
+    <string name="drl_reviewe">Please enter a review</string>
+    
+    <string name="rrl_title">Restaurant review</string>
+    <string name="rrl_ok">Add review</string>
+    <string name="rrl_cancel">Cancel</string>
+    <string name="rrl_name">Please enter a name</string>
+    <string name="rrl_reviewe">Please enter a review</string>
+    
+    <string name="ri_title">Information</string>
+    <string name="ri_cancel">Cancel</string>
+    
+    <string name="app_name">TechnionFood</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="start">Trying to establish connection with server</string>
+	<string name="rest_logo">Restaurant logo</string>
+	<string name="distance">Distance: </string>
+	<string name="shekels">NIS</string>
+	<string name="navigateTo">Navigate to restaurant</string>
+	<string name="reviews">Reviews</string>
+	<string name="menu">Menu</string>
+	<string name="info">Info</string>
+	<string name="rate">Rate</string>
+	<string name="call">Call</string>
+
+	<string-array name="nav_drawer_items">
+        <item >Home</item>
+        <item >Search</item>
+        <item >Deals</item>
+        <item >Settings</item>
+        <item >About us</item>
+    </string-array>
+     
+    <!-- Nav Drawer List Item Icons -->
+    <!-- Keep them in order as the titles are in -->
+    <array name="nav_drawer_icons">
+        <item>@drawable/home</item>
+        <item>@drawable/find</item>
+        <item>@drawable/promotion</item>
+        <item>@drawable/process</item>
+        <item>@drawable/info</item>
+    </array>    
+</resources>

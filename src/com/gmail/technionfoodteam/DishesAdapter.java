@@ -25,19 +25,27 @@ public class DishesAdapter extends BaseExpandableListAdapter  {
 	private LinkedList<Integer> keys;
 	private HashMap<Integer, String> typeValuesMap;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
-    private Context context;
-	public DishesAdapter(Context context, HashMap<Integer, String> valuesMap){
+    private MainActivity mainActivity;
+	
+    public DishesAdapter(MainActivity activity, HashMap<Integer, String> valuesMap){
 		typeValuesMap = valuesMap;
 		map = new HashMap<Integer, LinkedList<Dish>>();
 		keys = new LinkedList<Integer>();
-		this.context = context;
+		this.mainActivity = activity;
 	}
     public void update(JSONArray arr) {
     	map = new HashMap<Integer, LinkedList<Dish>>();
 		keys = new LinkedList<Integer>();
+		boolean areconstrainsAllowed = mainActivity.areDataConstrainsAllowed();
+		int priceConstrain = mainActivity.getPriceConstrain();
 		for(int i=0; i<arr.length();i++){
 			try {
 				Dish dish = Dish.fromJSON(arr.getJSONObject(i));
+				if(areconstrainsAllowed){
+					if(dish.getPrice() > priceConstrain){
+						continue;
+					}
+				}
 				if(keys.indexOf(dish.getDishType()) == -1){
 					keys.add(dish.getDishType());
 					LinkedList<Dish> lst = new LinkedList<Dish>();
@@ -67,7 +75,7 @@ public class DishesAdapter extends BaseExpandableListAdapter  {
 		View view = convertView;
 		final ViewHolder holder;
 		if(convertView == null){
-			LayoutInflater inflater = (LayoutInflater) context
+			LayoutInflater inflater = (LayoutInflater) mainActivity
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.dish_list_item, parent, false);
 			holder = new ViewHolder();
@@ -129,7 +137,7 @@ public class DishesAdapter extends BaseExpandableListAdapter  {
     		headerTitle = " Unknown group at position " + groupPosition;
     	}
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) context
+            LayoutInflater infalInflater = (LayoutInflater) mainActivity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }

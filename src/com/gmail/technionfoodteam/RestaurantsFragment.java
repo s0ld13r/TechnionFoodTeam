@@ -65,7 +65,7 @@ public class RestaurantsFragment extends Fragment{
     public void onActivityCreated(Bundle savedInstanceState) {
     	super.onActivityCreated(savedInstanceState); 
     	mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager()); 
-    	 restaurantsAdapter = new RestaurantsAdapter((TechnionFoodApp)getActivity().getApplication());
+    	 restaurantsAdapter = new RestaurantsAdapter((MainActivity)getActivity());
     	 mViewPager.setAdapter(mSectionsPagerAdapter);
     	 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
  			

@@ -26,26 +26,38 @@ public class RestaurantsAdapter extends BaseAdapter {
 	private int orderBy = -1;
 	private LinkedList<Restaurant> restaurants;
 	private ImageLoader imageLoader = ImageLoader.getInstance(); 
-    private TechnionFoodApp app;
+    private MainActivity activity;
     
-    public RestaurantsAdapter(TechnionFoodApp myApp) {
+    public RestaurantsAdapter(MainActivity mainActivity) {
 		
 		restaurants = new LinkedList<Restaurant>();
-		this.app = myApp;
+		this.activity = mainActivity;
 		orderBy = -1;
 	}
-    public RestaurantsAdapter(JSONArray arr,TechnionFoodApp myApp) {
+    public RestaurantsAdapter(JSONArray arr,MainActivity mainActivity) {
 		
 		setRestaurantsListBy(arr, BY_RANKING);
-		this.app = myApp;
+		this.activity = mainActivity;
 		orderBy = BY_RANKING;
 	}
 	private void setRestaurantsListBy(JSONArray arr, int order){
 		restaurants = new LinkedList<Restaurant>();
+		boolean areconstrainsAllowed = activity.areDataConstrainsAllowed();
+		int distanceConstrain = activity.getDistanceConstrain();
 		
 		for(int i=0; i<arr.length();i++){
 			try {
-				restaurants.add(Restaurant.fromJSON(arr.getJSONObject(i)));
+				Restaurant res = Restaurant.fromJSON(arr.getJSONObject(i));
+				//haved to moved to server but we have no time to do this
+				if(areconstrainsAllowed){
+					Location resLocation = new Location("restaurant location");
+					resLocation.setLatitude(res.getLat());
+					resLocation.setLongitude(res.getLng());
+					if(activity.getCurrentLocation().distanceTo(resLocation) > distanceConstrain){
+						continue;
+					}
+				}
+				restaurants.add(res);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -73,7 +85,7 @@ public class RestaurantsAdapter extends BaseAdapter {
 						Location rhsLocation = new Location("Right POint");
 						rhsLocation.setLatitude(rhs.getLat());
 						rhsLocation.setLongitude(rhs.getLng());
-						Location current = app.getCurrentLocation();
+						Location current = activity.getCurrentLocation();
 						return Float.valueOf(current.distanceTo(lhsLocation)).compareTo(Float.valueOf(current.distanceTo(rhsLocation)));
 					}
 				};
@@ -107,7 +119,7 @@ public class RestaurantsAdapter extends BaseAdapter {
 		View view = convertView;
 		final ViewHolder holder;
 		if(convertView == null){
-			LayoutInflater inflater = (LayoutInflater) app
+			LayoutInflater inflater = (LayoutInflater) activity
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.restaurant_list_item, parent, false);
 			holder = new ViewHolder();

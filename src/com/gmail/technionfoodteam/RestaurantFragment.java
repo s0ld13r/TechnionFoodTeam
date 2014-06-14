@@ -116,7 +116,7 @@ public class RestaurantFragment extends Fragment {
 		restaurantId = getArguments().getInt(RESTAURANT_ID, 1);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		dishesAdapter = new DishesAdapter(getActivity(),((MainActivity)getActivity()).getDishTypeToValueMap());
+		dishesAdapter = new DishesAdapter((MainActivity)getActivity(),((MainActivity)getActivity()).getDishTypeToValueMap());
 		reviewsAdapter = new ReviewsAdapter(getActivity());
 		GetRestaurantFromServer thread = new GetRestaurantFromServer();
 		thread.execute();

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceCategory
+	    android:title="@string/pref_main_settings">
+	    <SwitchPreference
+	         android:key="@string/pref_are_notifications_allowed"
+	         android:title="@string/pref_allow_notifications" 
+	         android:defaultValue="true" />    
+    </PreferenceCategory>
+	<PreferenceCategory 
+	    android:title="@string/pref_user_cat">
+	    <EditTextPreference
+	        android:key="@string/pref_username"
+	        android:title="@string/pref_username_title"
+	        android:dialogTitle="@string/pref_username_dialog_title"
+	        android:defaultValue="@string/pref_username_default"/>
+	</PreferenceCategory> 
+	
+	<PreferenceCategory
+	    android:title="@string/pref_data_constrains">
+	    <SwitchPreference
+	         android:key="@string/pref_are_data_constrains_allowed"
+	         android:title="@string/pref_data_constrains" 
+	         android:defaultValue="false" />
+	    <EditTextPreference
+	        android:key="@string/pref_price_constrain"
+	        android:title="@string/pref_price_constrain_title"
+	        android:dialogTitle="@string/pref_price_constrain_dialog_title"
+	        android:defaultValue="@string/pref_price_constrain_default"
+	        android:numeric="integer" />
+	    <EditTextPreference
+	        android:key="@string/pref_distance_constrain"
+	        android:title="@string/pref_distance_constrain_title"
+	        android:dialogTitle="@string/pref_distance_constrain_dialog_title"
+	        android:defaultValue="@string/pref_distance_constrain_default"
+	        android:numeric="integer" />"
+	       
+    </PreferenceCategory>
+    
+
+</PreferenceScreen>
