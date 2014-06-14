@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-	<PreferenceCategory
-	    android:title="@string/pref_main_settings">
-	    <SwitchPreference
-	         android:key="@string/pref_are_notifications_allowed"
-	         android:title="@string/pref_allow_notifications" 
-	         android:defaultValue="true" />    
-    </PreferenceCategory>
+	
 	<PreferenceCategory 
 	    android:title="@string/pref_user_cat">
 	    <EditTextPreference

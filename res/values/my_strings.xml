@@ -14,9 +14,6 @@
     <string name="pref_distance_constrain_title">Maximum allowed distance in meters</string>
     <string name="pref_distance_constrain_dialog_title">Please enter distance upper bound in meters</string>
     
-    <string name="pref_allow_notifications">Allow notifications</string>
-    <string name="pref_main_settings">Main settings</string>
-    <string name="pref_are_notifications_allowed">areNotificationsAllowed</string>
     <string name="pref_user_cat">User prefrences</string>
     <string name="pref_username">username</string>
     <string name="pref_username_default">Anonymus</string>
