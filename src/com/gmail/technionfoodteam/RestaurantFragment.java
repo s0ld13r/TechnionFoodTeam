@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -126,7 +127,12 @@ public class RestaurantFragment extends Fragment {
 	}
 	private class GetRestaurantFromServer extends AsyncTask<Void, Void, String>{
 		private HttpURLConnection connection;
-		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			((MainActivity)getActivity()).ringProgressDialog = ProgressDialog.show((MainActivity)getActivity(), "Please wait ...", "Downloading Restaurant info from server ...", true);
+			((MainActivity)getActivity()).ringProgressDialog.setCancelable(true);
+		}
 		@Override
 		protected String doInBackground(Void... params) {
 			try{
@@ -162,6 +168,9 @@ public class RestaurantFragment extends Fragment {
 		}
 		@Override
 		protected void onPostExecute(String result) {
+			if(((MainActivity)getActivity()).ringProgressDialog != null){
+				((MainActivity)getActivity()).ringProgressDialog.dismiss();
+			}
 			JSONArray dishesArr = new JSONArray();
 			JSONArray reviewsArr = new JSONArray();
 			try {

@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -98,7 +99,7 @@ public class SearchFragment extends Fragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				Toast.makeText(getActivity(), obj.toString(), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getActivity(), obj.toString(), Toast.LENGTH_LONG).show();
 				SendQueryToServer thread = new SendQueryToServer();
 		    	thread.execute();
 			}
@@ -310,7 +311,12 @@ public class SearchFragment extends Fragment {
 	
 	
 	private class SendQueryToServer extends AsyncTask<Void, Void, String>{
-		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			((MainActivity)getActivity()).ringProgressDialog = ProgressDialog.show((MainActivity)getActivity(), "Please wait ...", "Download query results from server ...", true);
+			((MainActivity)getActivity()).ringProgressDialog.setCancelable(true);
+		}
 		@Override
 		protected String doInBackground(Void... params) {
 			try{
@@ -346,6 +352,9 @@ public class SearchFragment extends Fragment {
 		}
 		@Override
 		protected void onPostExecute(String result) {
+			if(((MainActivity)getActivity()).ringProgressDialog != null){
+				((MainActivity)getActivity()).ringProgressDialog.dismiss();
+			}
 			JSONArray arr;
 			try {
 				TechnionFoodApp.isJSONError(result);

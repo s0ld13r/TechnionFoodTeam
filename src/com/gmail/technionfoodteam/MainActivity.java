@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -40,7 +41,7 @@ import com.gmail.technionfoodteam.slidebar.NavDrawerItem;
 import com.gmail.technionfoodteam.slidebar.NavDrawerListAdapter;
 
 public class MainActivity extends FragmentActivity {
-
+	public  ProgressDialog ringProgressDialog;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -281,6 +282,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		@Override
 		protected void onPostExecute(String result) {
+			
 			try {
 				TechnionFoodApp.isJSONError(result);
 				JSONArray arr = new JSONArray(result);

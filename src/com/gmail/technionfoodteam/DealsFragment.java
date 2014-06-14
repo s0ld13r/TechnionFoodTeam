@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,7 +62,12 @@ public class DealsFragment extends Fragment {
 	}
 	private class GetDealsFromServer extends AsyncTask<Void, Void, String>{
 		private HttpURLConnection connection;
-		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			((MainActivity)getActivity()).ringProgressDialog = ProgressDialog.show((MainActivity)getActivity(), "Please wait ...", "Downloading Deals from server ...", true);
+			((MainActivity)getActivity()).ringProgressDialog.setCancelable(true);
+		}
 		@Override
 		protected String doInBackground(Void... params) {
 			try{
@@ -97,6 +103,9 @@ public class DealsFragment extends Fragment {
 		}
 		@Override
 		protected void onPostExecute(String result) {
+			if(((MainActivity)getActivity()).ringProgressDialog != null){
+				((MainActivity)getActivity()).ringProgressDialog.dismiss();
+			}
 			JSONArray arr = new JSONArray();
 			try {
 				TechnionFoodApp.isJSONError(result);
